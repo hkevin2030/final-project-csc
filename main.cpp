@@ -18,6 +18,7 @@
 
 using namespace std;
 
+
 void initalBoard(int array[][boardSize]);
 
 void printBoard(int array[][boardSize]);
@@ -135,7 +136,7 @@ void printBoard(int array[][boardSize]) {
         }
         cout << endl;
         cout << setw(5);
-        for(int y = 0; y < 10; y++){
+        for(int y = 0; y < 14; y++){
             cout << "-";
         }
         cout << endl;
@@ -154,7 +155,7 @@ void userMove(int array[][boardSize]) {
     string user_input, temp;
     int x = -1,y;
 
-    cout << "Please enter the square placement in this format: 'A1' for the top corner square for example: " << endl;
+    cout << "Please enter the square location in this format (Ex: A1, B2): " << endl;
     cin >> user_input;
 
     // Converting values A = 0, B = 1, C = 2
@@ -357,7 +358,7 @@ bool checkForGame(int array[][boardSize]) {
         return true;
     }
 
-    //if not, check last diagonal right to left
+    //check last diagonal right to left
     //make sure count is reset outside of the loop
     user_count = 0;
     cpu_count = 0;

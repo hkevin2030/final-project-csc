@@ -136,7 +136,7 @@ void printBoard(int array[][boardSize]) {
         }
         cout << endl;
         cout << setw(5);
-        for(int y = 0; y < 14; y++){
+        for(int y = 0; y < 12; y++){
             cout << "-";
         }
         cout << endl;
@@ -148,6 +148,7 @@ void printBoard(int array[][boardSize]) {
 /** userMove (void)
  * user inputs placement of 'X' on gameboard.
  * Function checks for invalid placement and input
+ * @exception STOI conversion
  * @param array
  */
 void userMove(int array[][boardSize]) {
@@ -173,6 +174,7 @@ void userMove(int array[][boardSize]) {
         userMove(array);
     }
 
+    // Preventing program exception from conversion
     temp = user_input.at(1);
     try {
         y = stoi(temp);

@@ -1,6 +1,9 @@
-//
-// Created by mana0303 on 3/11/2021.
-//
+/*
+ * Author: Kevin Ho
+ * Course: CSCD ####
+ * Professor:
+ * Description: Tic Tac Toe Game player vs AI
+*/
 
 
 
@@ -28,6 +31,10 @@ bool checkFullBoard(int array[][boardSize]);
 bool checkForGame(int array[][boardSize]);
 
 
+/** main (int)
+ * Initial program entry
+ * @return  N/A
+ */
 
 int main (){
 
@@ -71,6 +78,7 @@ int main (){
             cpuMove(gameboard);
 
             if (checkFullBoard(gameboard)) {
+                printBoard(gameboard);
                 break;
             }
 
@@ -87,6 +95,11 @@ int main (){
     return 0;
 }
 
+/** initalBoard (void)
+ * Initializes array with default values
+ * @param array
+ */
+
 void initalBoard(int array[][boardSize]){
     for(int i = 0; i < boardSize; i++){
         for(int z = 0; z < boardSize; z++){
@@ -95,6 +108,10 @@ void initalBoard(int array[][boardSize]){
     }
 }
 
+/** printBoard (void)
+ * Prints the array to the screen with formatting
+ * @param array
+ */
 void printBoard(int array[][boardSize]) {
     cout << setw(6) << "A" << setw(4)  << "B" << setw(4) << "C" << endl;
 
@@ -126,6 +143,12 @@ void printBoard(int array[][boardSize]) {
 
 }
 
+
+/** userMove (void)
+ * user inputs placement of 'X' on gameboard.
+ * Function checks for invalid placement and input
+ * @param array
+ */
 void userMove(int array[][boardSize]) {
     int user_Move = 2;
     string user_input, temp;
@@ -134,6 +157,7 @@ void userMove(int array[][boardSize]) {
     cout << "Please enter the square placement in this format: 'A1' for the top corner square for example: " << endl;
     cin >> user_input;
 
+    // Converting values A = 0, B = 1, C = 2
     if(user_input.at(0) == 'A'){
          x = 0;
     }
@@ -149,15 +173,19 @@ void userMove(int array[][boardSize]) {
     }
 
     temp = user_input.at(1);
-
-    y = stoi(temp);
-
+    try {
+        y = stoi(temp);
+    }
+    catch (exception& exception) {
+        cout << "Please try again, invalid input " << endl;
+        userMove(array);
+    }
+    y = y - 1;
     if(y > 3 || y < 0){
         cout << "Please try again, invalid input " << endl;
         userMove(array);
     }
 
-    y = y - 1;
     if(array[y][x]  != -1){
         cout << "Square is already taken please try again!" << endl;
         userMove(array);
@@ -168,14 +196,23 @@ void userMove(int array[][boardSize]) {
 
 }
 
+/** cpuMove (void)
+ * CPU places 'O' to the array
+ * Functions checks for invalid placement and overwrite protection
+ * @param array
+ */
+
 void cpuMove(int array[][boardSize]) {
 
     for(int i =  0; i< boardSize; i++){
         for(int z = 0; z<boardSize; z++) {
             if (array[i][z] != -1){
+                // If it not -1 continue
+                // make sure opp. value can not be overwritten
                 continue;
             }
             else{
+                // else set  i,z to 1
                 array[i][z] = 1;
                 return;
             }
@@ -183,6 +220,12 @@ void cpuMove(int array[][boardSize]) {
     }
 
 }
+
+/** checkFullBoard (bool)
+ * checks the array for all spots filled, if all spots all filled then return true, else false.
+ * @param array
+ * @return IF array full
+ */
 
 bool checkFullBoard(int array[][boardSize]) {
     int counter = 0;
@@ -200,102 +243,144 @@ bool checkFullBoard(int array[][boardSize]) {
     return false;
 }
 
+/** checkForGame  (bool)
+ * Checks to see if the user or the CPU have a win, based on horizontal, vertical, and diagonal possibilities.
+ * @param array
+ * @return GAME WON
+ */
+
 bool checkForGame(int array[][boardSize]) {
+    //keep count of owned squares
+    int user_count = 0;
+    int cpu_count = 0;
 
-    int countX = 0;
-    int countO = 0;
+    /*
+     * CHECK ROWS
+     */
+    for(int i = 0; i < boardSize; i++)
+    {
+        //make sure each row count is reset
+        user_count = 0;
+        cpu_count = 0;
 
-    // Check rows
-
-    for (int i = 0; i < boardSize; i++) {
-        countX = 0;
-        countO = 0;
-
-        for (int j = 0; j < boardSize; j++) {
-            if (array[i][j] == -1)
+        //columns
+        for(int j = 0; j < boardSize; j++)
+        {
+            //if empty space, forget checking the rest
+            if( array[i][j] == -1) {
                 break;
-            else if (array[i][j] == 1)
-                countO++;
-            else if (array[i][j] == 2)
-                countX++;
+            }
+            else if (array[i][j] == 1) {
+                cpu_count++;
+            }
+            else if (array[i][j] == 2) {
+                user_count++;
+            }
+        }
+
+        // check for winner based on rows
+        if(user_count == 3 || cpu_count == 3) {
+            if (user_count == 3){
+                cout << "You won the game!" << endl;
+            }
+            else {
+                cout << "CPU has won the game!" << endl;
+            }
+            return true;
         }
     }
 
-    if (countX == 3 || countO == 3) {
-        if (countX == 3) {
-            cout << "You have won the game!" << endl;
-        } else {
-            cout << "CPU has won the game!" << endl;
-        }
-        return true;
-    }
+    /*
+     * CHECK COLUMNS
+     */
+    for(int j = 0; j < boardSize; j++)
+    {
+        user_count = 0;
+        cpu_count = 0;
 
-    //check columns
-    for (int j = 0; j < boardSize; j++) {
-
-        countX = 0;
-        countO = 0;
-
-        for (int i = 0; i < boardSize; i++) {
-
-            if (array[i][j] == -1)
+        //loop through rows
+        for(int i = 0; i < boardSize; i++)
+        {
+            //if empty space, forget checking the rest
+            if( array[i][j] == -1) {
                 break;
-            else if (array[i][j] == 1)
-                countO++;
-            else if (array[i][j] == 2)
-                countX++;
+            }
+            else if (array[i][j] == 1) {
+                cpu_count++;
+            }
+            else if (array[i][j] == 2) {
+                user_count++;
+            }
+        }
+
+        // Check winner based on columns
+        if(user_count == 3 || cpu_count == 3) {
+            if (user_count == 3){
+                cout << "You won the game!" << endl;
+            }
+            else {
+                cout << "CPU has won the game!" << endl;
+            }
+            return true;
+        }
+    }
+    /*
+     * CHECK DIAGONAL
+     */
+
+    //if not rows or columns win, check left to right diagonal
+    user_count = 0;
+    cpu_count = 0;
+    for(int i = 0; i < boardSize; i++)
+    {
+        //if empty space, forget checking the rest
+        if( array[i][i] == -1) {
+            break;
+        }
+        else if (array[i][i] == 1) {
+            cpu_count++;
+        }
+        else if (array[i][i] == 2) {
+            user_count++;
         }
     }
 
-    //did we find a winner?
-    if (countX == 3 || countO == 3) {
-        if (countX == 3) {
-            cout << "You have won the game!" << endl;
-        } else {
+    // check winner based on diagonal
+
+    if(user_count == 3 || cpu_count == 3) {
+        if (user_count == 3){
+            cout << "You won the game!" << endl;
+        }
+        else {
             cout << "CPU has won the game!" << endl;
         }
         return true;
     }
 
-
-    countX = 0;
-    countO = 0;
-    for (int i = 0; i < boardSize; i++) {
-
-        if (array[i][i] == '.')
+    //if not, check last diagonal right to left
+    //make sure count is reset outside of the loop
+    user_count = 0;
+    cpu_count = 0;
+    for(int i = 0, j = (boardSize - 1); i < boardSize; i++, j--)
+    {
+        // if empty space, forget checking the rest
+        if( array[i][j] == -1) {
             break;
-        else if (array[i][i] == 1)
-            countO++;
-        else if (array[i][i] == 2)
-            countX++;
-    }
-
-    //did we find a winner?
-    if (countX == 3 || countO == 3) {
-        if (countX == 3) {
-            cout << "You have won the game!" << endl;
-        } else {
-            cout << "CPU has won the game!" << endl;
         }
-        return true;
+        else if (array[i][j] == 1) {
+            cpu_count++;
+        }
+        else if (array[i][j] == 2) {
+            user_count++;
+        }
     }
 
-    countX = 0;
-    countO = 0;
-    for (int i = 0, j = (boardSize - 1); i < boardSize; i++, j--) {
-        if (array[i][j] == -1)
-            break;
-        else if (array[i][j] == 1)
-            countO++;
-        else if (array[i][j] == 2)
-            countX++;
-    }
-
-    //did we find a winner?
-    if (countX == 3 || countO == 3) {
-        if (countX == 3) {
-            cout << "You have won the game!" << endl;
-        } else {
+    // check winner based on diagonal opp.
+    if(user_count == 3 || cpu_count == 3){
+        if (user_count == 3){
+            cout << "You won the game!" << endl;
+        }
+        else {
             cout << "CPU has won the game!" << endl;
         }
         return true;
@@ -304,6 +389,7 @@ bool checkForGame(int array[][boardSize]) {
     return false;
 
 }
+
 
 
 
